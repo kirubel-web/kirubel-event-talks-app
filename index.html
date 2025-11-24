@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tech Talks Today</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            margin: 0;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+
+        header {
+            background-color: #333;
+            color: white;
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .search-container {
+            margin-top: 1rem;
+        }
+
+        #search-bar {
+            width: 80%;
+            max-width: 400px;
+            padding: 0.5rem;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        #schedule-container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 1rem;
+        }
+
+        .talk {
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-bottom: 1.5rem;
+            padding: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .talk h2 {
+            margin-top: 0;
+        }
+
+        .talk .time {
+            font-weight: bold;
+            color: #007BFF;
+        }
+
+        .talk .speakers {
+            font-style: italic;
+            margin-bottom: 1rem;
+        }
+
+        .talk .categories {
+            margin-top: 1rem;
+        }
+
+        .talk .category {
+            display: inline-block;
+            background-color: #007BFF;
+            color: white;
+            padding: 0.3rem 0.6rem;
+            border-radius: 3px;
+            font-size: 0.9rem;
+            margin-right: 0.5rem;
+        }
+
+        .break {
+            background-color: #eee;
+            text-align: center;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            border-radius: 5px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 1rem;
+            background-color: #333;
+            color: white;
+            position: relative;
+            bottom: 0;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Tech Talks Today</h1>
+        <div class="search-container">
+            <input type="text" id="search-bar" placeholder="Search by category...">
+        </div>
+    </header>
+    <main id="schedule-container">
+        <!-- Talks will be dynamically inserted here -->
+    </main>
+    <footer>
+        <p>&copy; 2025 Tech Talks Today</p>
+    </footer>
+    <script>
+        const talks = [
+            {
+                "title": "The Future of JavaScript",
+                "speakers": ["Jane Doe"],
+                "categories": ["Web", "JavaScript", "Future"],
+                "duration": 60,
+                "description": "An in-depth look at the upcoming features of JavaScript and how they will shape the future of web development."
+            },
+            {
+                "title": "AI-Powered APIs",
+                "speakers": ["John Smith"],
+                "categories": ["AI", "APIs"],
+                "duration": 60,
+                "description": "Learn how to build and deploy AI-powered APIs that can be used to create intelligent applications."
+            },
+            {
+                "title": "Advanced CSS Techniques",
+                "speakers": ["Emily White"],
+                "categories": ["Web", "CSS"],
+                "duration": 60,
+                "description": "A deep dive into advanced CSS techniques that will help you create stunning and responsive user interfaces."
+            },
+            {
+                "title": "Building Scalable Systems",
+                "speakers": ["David Green", "Sarah Brown"],
+                "categories": ["Backend", "Scalability"],
+                "duration": 60,
+                "description": "Discover the principles and patterns for building scalable and resilient backend systems."
+            },
+            {
+                "title": "The Ethics of AI",
+                "speakers": ["Michael Black"],
+                "categories": ["AI", "Ethics"],
+                "duration": 60,
+                "description": "A thought-provoking discussion on the ethical implications of artificial intelligence and how we can ensure it is used for good."
+            },
+            {
+                "title": "WebAssembly in Action",
+                "speakers": ["Chris Blue"],
+                "categories": ["Web", "WASM"],
+                "duration": 60,
+                "description": "Learn how to use WebAssembly to run high-performance code in the browser and unlock new possibilities for web applications."
+            }
+        ];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const scheduleContainer = document.getElementById('schedule-container');
+            const searchBar = document.getElementById('search-bar');
+            
+            renderSchedule(talks);
+
+            searchBar.addEventListener('input', (e) => {
+                const searchTerm = e.target.value.toLowerCase();
+                const filteredTalks = talks.filter(talk => {
+                    return talk.categories.some(category => category.toLowerCase().includes(searchTerm));
+                });
+                renderSchedule(filteredTalks);
+            });
+
+            function renderSchedule(talksToRender) {
+                scheduleContainer.innerHTML = '';
+                let talkCount = 0;
+                let time = new Date();
+                time.setHours(10, 0, 0, 0);
+
+                const formatTime = (date) => {
+                    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                }
+
+                talksToRender.forEach((talk, index) => {
+                    if (talkCount === 3) {
+                        const lunchBreak = document.createElement('div');
+                        lunchBreak.className = 'break';
+                        lunchBreak.innerHTML = `<h3>Lunch Break</h3><p class="time">${formatTime(time)} - ${formatTime(new Date(time.getTime() + 60 * 60 * 1000))}</p>`;
+                        scheduleContainer.appendChild(lunchBreak);
+                        time.setMinutes(time.getMinutes() + 60);
+                    }
+
+                    const talkElement = document.createElement('div');
+                    talkElement.className = 'talk';
+
+                    const startTime = new Date(time.getTime());
+                    const endTime = new Date(startTime.getTime() + talk.duration * 60 * 1000);
+
+                    talkElement.innerHTML = `
+                        <p class="time">${formatTime(startTime)} - ${formatTime(endTime)}</p>
+                        <h2>${talk.title}</h2>
+                        <p class="speakers">By: ${talk.speakers.join(', ')}</p>
+                        <p>${talk.description}</p>
+                        <div class="categories">
+                            ${talk.categories.map(category => `<span class="category">${category}</span>`).join('')}
+                        </div>
+                    `;
+                    scheduleContainer.appendChild(talkElement);
+
+                    time.setMinutes(time.getMinutes() + talk.duration + 10);
+                    talkCount++;
+                });
+            }
+        });
+    </script>
+</body>
+</html>
